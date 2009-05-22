@@ -1,13 +1,13 @@
-SUMMARY
+==== Summary
 
 Rack convenience middleware that allows triggering different actions based on
 requested format. Standalone version of the equivalent Rails functionality.
 
-INSTALLATION
+==== Installation
 
   sudo gem install mynyml-rack-respond_to --source=http://gems.github.com/
 
-USAGE
+==== Usage
 
   require 'rubygems'
   require 'rack'
@@ -36,7 +36,7 @@ USAGE
 
   run App.new
 
-TIP
+==== Tips
 
 To fully extract the requested format, use:
 
@@ -46,3 +46,8 @@ To fully extract the requested format, use:
 These will allow using only <tt>Rack::RespondTo.env = env</tt> to set up ResondTo.
 
 See examples/recommended_use.ru for a complete example.
+
+==== Links
+
+source:: http://github.com/mynyml/rack-respond_to
+rdocs::  http://docs.github.com/mynyml/rack-respond_to
