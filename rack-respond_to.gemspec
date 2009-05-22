@@ -33,7 +33,6 @@ files:
 - lib/rack
 - lib/rack/respond_to.rb
 - rack-respond_to.gemspec
-- doc
 - LICENSE
 - README
 has_rdoc: true
