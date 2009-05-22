@@ -1,0 +1,48 @@
+SUMMARY
+
+Rack convenience middleware that allows triggering different actions based on
+requested format. Standalone version of the equivalent Rails functionality.
+
+INSTALLATION
+
+  sudo gem install mynyml-rack-respond_to --source=http://gems.github.com/
+
+USAGE
+
+  require 'rubygems'
+  require 'rack'
+  require 'rack/respond_to'
+
+  class App
+    include Rack::RespondTo
+
+    def call(env)
+      # simply pass in the env if another middleware already added
+      # the format to env['request.format']
+      #Rack::RespondTo.env = env
+
+      # otherwise, you can assign it directly
+      Rack::RespondTo.format = 'html'
+
+      body = respond_to do |format|
+        format.html { '<em>html</em>' }
+        format.xml  { '<body>xml</body>' }
+      end
+
+      content_type = Rack::RespondTo.mime_type
+      [200, {'Content-Type' => content_type}, [body]]
+    end
+  end
+
+  run App.new
+
+TIP
+
+To fully extract the requested format, use:
+
+  Rack::AcceptFormat    (sudo gem install rack-rack-contrib           --source=http://gems.github.com/)
+  Rack::AbstractFormat  (sudo gem install mynyml-rack-abstract-format --source=http://gems.github.com/)
+
+These will allow using only <tt>Rack::RespondTo.env = env</tt> to set up ResondTo.
+
+See examples/recommended_use.ru for a complete example.
