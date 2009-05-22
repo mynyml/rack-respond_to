@@ -28,7 +28,7 @@ class App
       end
     end
 
-    content_type = Rack::Mime.mime_type('.'+Rack::RespondTo.format)
+    content_type = Rack::RespondTo.mime_type
     [200, {'Content-Type' => content_type}, [body]]
   end
 end
