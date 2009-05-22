@@ -9,7 +9,7 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2009-05-21 00:00:00 -04:00
+date: 2009-05-22 00:00:00 -04:00
 default_executable: 
 dependencies: []
 
@@ -33,6 +33,7 @@ files:
 - lib/rack
 - lib/rack/respond_to.rb
 - rack-respond_to.gemspec
+- doc
 - LICENSE
 - README
 has_rdoc: true
