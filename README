@@ -38,8 +38,10 @@ requested mime type. Standalone version of the equivalent Rails functionality.
 
 ===== Tips
 
-If you need RespondTo to consider url extentions
-(http://example.com/foo.*xml*), use in combination with Rack::AbstractFormat
+Use together with Rack::AbstractFormat to respond to routes based on url
+extensions. For example, if you want <tt>example.com/foo.xml</tt> to trigger
+the <tt>format.xml</tt> block (Rack::AbstractFormat moves the extension into
+HTTP_ACCEPT).
 
   sudo gem install mynyml-rack-abstract-format --source=http://gems.github.com/
 
