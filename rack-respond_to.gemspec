@@ -1,7 +1,7 @@
 --- !ruby/object:Gem::Specification 
 name: rack-respond_to
 version: !ruby/object:Gem::Version 
-  version: "0.9"
+  version: 0.9.4
 platform: ruby
 authors: 
 - Martin Aumont
@@ -9,7 +9,7 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2009-05-22 00:00:00 -04:00
+date: 2009-06-03 00:00:00 -04:00
 default_executable: 
 dependencies: []
 
@@ -29,6 +29,7 @@ files:
 - examples
 - examples/simple_app.ru
 - examples/recommended_use.ru
+- TODO
 - lib
 - lib/rack
 - lib/rack/respond_to.rb
