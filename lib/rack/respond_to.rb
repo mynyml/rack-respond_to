@@ -3,22 +3,29 @@ module Rack
   # Based on Rails's API, and sinatra-respond_to (http://github.com/cehoffman/sinatra-respond_to)
   #
   # See examples/ directory for code examples.
+  #
   module RespondTo
     class << self
-      # Assign the environment directly if it contains the format in
-      # env['request.format']. This is useful in conjunction with other
-      # middlewares that store the format in the env key.
+      # Assign the environment directly to fetch the mime type from
+      # env['HTTP_ACCEPT'] ('Accept:' request header).
+      #
+      # ===== Example
+      #
+      #   def call(env)
+      #     Rack::RespondTo.env = env
+      #   end
+      #
       attr_accessor :env
 
-      # If used completely standalone, you can assign the request format directly.
+      # If used completely standalone, you can assign the request mime_type directly.
       #
-      #   RespondTo.format = 'xml'
-      attr_writer :format
-
-      # Requested format
-      def format
-        (@format || self.env['request.format']).to_s.strip.downcase.sub(/^\./,'')
-      end
+      # ===== Example
+      #
+      #   RespondTo.mime_type = 'application/xml'
+      #
+      attr_accessor :mime_type
+      alias :media_type= :mime_type=
+      alias :media_type  :mime_type
 
       def included(base) #:nodoc:
         base.extend(ClassMethods)
@@ -37,11 +44,30 @@ module Rack
       # ===== Example
       #
       #   [200, {'Content-Type' => Rack::RespondTo.mime_type}, [body]]
+      #
       def mime_type(format = nil)
-        format ||= self.format
-        ext = format.sub(/^\./,'').insert(0,'.')
-        Rack::Mime.mime_type(ext)
+        @mime_type || accept
       end
+
+      # Cast format to mime type
+      #
+      # ===== Example
+      #
+      #   RespondTo::MimeType('html') #=> 'text/html'
+      #
+      def MimeType(format)
+        Rack::Mime.mime_type(format.sub(/^\./,'').insert(0,'.'))
+      end
+
+      private
+        # The mime type retained from the HTTP_ACCEPT header's list
+        #
+        # ===== Returns
+        # String:: first mime type from header's list or nil if none
+        #
+        def accept
+          self.env['HTTP_ACCEPT'].split(',').first.split(';').first if env && env['HTTP_ACCEPT'] && !env['HTTP_ACCEPT'].empty?
+        end
     end
 
     module InstanceMethods
@@ -53,11 +79,11 @@ module Rack
 
     module ClassMethods
       # Allows defining different actions and returns the one which corresponds
-      # to the current RespondTo.format.
+      # to the current RespondTo.mime_type.
       #
       # ===== Example
       #
-      #   RespondTo.format = 'html'
+      #   RespondTo.mime_type = 'text/html'
       #
       #   respond_to do |format|
       #     format.html { '<em>html</em>' }
@@ -75,7 +101,7 @@ module Rack
 
     class Format < Hash #:nodoc:
       def method_missing(format, *args, &handler)
-        self[RespondTo.mime_type(format.to_s)] = handler
+        self[RespondTo::MimeType(format.to_s)] = handler
       end
     end
   end
