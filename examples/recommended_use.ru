@@ -1,14 +1,20 @@
 # install required dependencies:
 #
-#   $sudo gem install rack-rack-contrib --source=http://gems.github.com/
 #   $sudo gem install mynyml-rack-abstract-format --source=http://gems.github.com/
 #
 # and run me with:
 #   $rackup examples/recommended_use.ru -p 8080
 #
+# and request:
+#   localhost:8080/foo.html
+#   localhost:8080/foo.xml
+#
+require 'pathname'
+root  =  Pathname(__FILE__).dirname.parent.expand_path
+$:.unshift(root + 'lib')
+
 require 'rubygems'
 require 'rack'
-require 'rack/contrib' # for Rack::AcceptFormat
 require 'rack/abstract_format'
 require 'rack/respond_to'
 
@@ -27,12 +33,10 @@ class App
       end
     end
 
-    content_type = Rack::RespondTo.mime_type
-    [200, {'Content-Type' => content_type}, [body]]
+    [200, {'Content-Type' => Rack::RespondTo.mime_type}, [body]]
   end
 end
 
-use Rack::AcceptFormat
 use Rack::AbstractFormat
 run App.new
 

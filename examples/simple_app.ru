@@ -3,7 +3,7 @@
 #
 require 'pathname'
 root  =  Pathname(__FILE__).dirname.parent.expand_path
-$:.unshift(root.join('lib'))
+$:.unshift(root + 'lib')
 
 require 'rubygems'
 require 'rack'
@@ -13,12 +13,7 @@ class App
   include Rack::RespondTo
 
   def call(env)
-    # simply pass in the env if another middleware already added
-    # the format to env['request.format']
-    #Rack::RespondTo.env = env
-
-    # otherwise, you can assign it directly
-    Rack::RespondTo.format = 'html'
+    Rack::RespondTo.mime_type = 'application/xml'
 
     body = case env['PATH_INFO']
     when '/'
@@ -28,8 +23,7 @@ class App
       end
     end
 
-    content_type = Rack::RespondTo.mime_type
-    [200, {'Content-Type' => content_type}, [body]]
+    [200, {'Content-Type' => Rack::RespondTo.mime_type}, [body]]
   end
 end
 
