@@ -22,7 +22,7 @@ end
 
 spec = Gem::Specification.new do |s|
   s.name            = 'rack-respond_to'
-  s.version         = '0.9.4'
+  s.version         = '0.9.5'
   s.summary         = "Rack middleware port of Rails's respond_to feature"
   s.description     = "Rack middleware port of Rails's respond_to feature"
   s.author          = "Martin Aumont"
@@ -31,6 +31,8 @@ spec = Gem::Specification.new do |s|
   s.has_rdoc        = true
   s.require_path    = "lib"
   s.files           = all_except([/doc/, /pkg/])
+
+  s.add_dependency 'mynyml-rack-accept-media-types', '>= 0.6'
 end
 
 Rake::GemPackageTask.new(spec) do |p|

@@ -1,7 +1,7 @@
 --- !ruby/object:Gem::Specification 
 name: rack-respond_to
 version: !ruby/object:Gem::Version 
-  version: 0.9.4
+  version: 0.9.5
 platform: ruby
 authors: 
 - Martin Aumont
@@ -9,10 +9,19 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2009-06-03 00:00:00 -04:00
+date: 2009-06-08 00:00:00 -04:00
 default_executable: 
-dependencies: []
-
+dependencies: 
+- !ruby/object:Gem::Dependency 
+  name: mynyml-rack-accept-media-types
+  type: :runtime
+  version_requirement: 
+  version_requirements: !ruby/object:Gem::Requirement 
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        version: "0.6"
+    version: 
 description: Rack middleware port of Rails's respond_to feature
 email: mynyml@gmail.com
 executables: []
