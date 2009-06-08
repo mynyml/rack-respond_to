@@ -34,18 +34,13 @@ module Rack
         end
       end
 
-      # Convenience method that returns the mime type of the given format
-      # (similar to Rack::Mime.mime_type).
+      # Mime type requested.
       #
-      # If format argument is omitted, will return the mime type for
-      # RespondTo.format (i.e. equivelent to RespondTo.mime_type(RespondTo.format)).
       # Useful for setting content type:
-      #
-      # ===== Example
       #
       #   [200, {'Content-Type' => Rack::RespondTo.mime_type}, [body]]
       #
-      def mime_type(format = nil)
+      def mime_type
         @mime_type || accept
       end
 
