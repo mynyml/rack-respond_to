@@ -1,3 +1,5 @@
+require 'rack/accept_media_types'
+
 module Rack
 
   # Based on Rails's API, and sinatra-respond_to (http://github.com/cehoffman/sinatra-respond_to)
@@ -61,7 +63,7 @@ module Rack
         # String:: first mime type from header's list or nil if none
         #
         def accept
-          self.env['HTTP_ACCEPT'].split(',').first.split(';').first if env && env['HTTP_ACCEPT'] && !env['HTTP_ACCEPT'].empty?
+          Rack::AcceptMediaTypes.new(self.env['HTTP_ACCEPT'] || '').prefered unless self.env.nil?
         end
     end
 

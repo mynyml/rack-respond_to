@@ -69,11 +69,6 @@ class TestRespondTo < Test::Unit::TestCase
     end
   end
 
-  test "mime type ignores content-type arguments" do
-    Rack::RespondTo.env = {'HTTP_ACCEPT' => 'application/xml;q=0.9,text/html'}
-    assert_equal 'application/xml', Rack::RespondTo.mime_type
-  end
-
   test "explicitly specified mime type takes precedence over env's" do
     Rack::RespondTo.env = {'HTTP_ACCEPT' => 'text/html'}
     Rack::RespondTo.mime_type = 'text/plain'
