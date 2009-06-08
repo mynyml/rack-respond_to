@@ -1,8 +1,7 @@
 # install required dependencies:
-#
 #   $sudo gem install mynyml-rack-abstract-format --source=http://gems.github.com/
 #
-# and run me with:
+# run with:
 #   $rackup examples/recommended_use.ru -p 8080
 #
 # and request:
