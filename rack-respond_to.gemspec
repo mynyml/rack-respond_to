@@ -1,7 +1,7 @@
 --- !ruby/object:Gem::Specification 
 name: rack-respond_to
 version: !ruby/object:Gem::Version 
-  version: 0.9.6
+  version: 0.9.7
 platform: ruby
 authors: 
 - Martin Aumont
