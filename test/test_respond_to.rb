@@ -7,7 +7,9 @@ end
 class TestRespondTo < Test::Unit::TestCase
 
   def setup
-    Rack::RespondTo.mime_type = nil
+    Rack::RespondTo.selected_media_type = nil
+    Rack::RespondTo.media_types = nil
+    Rack::RespondTo.env = nil
   end
 
   ## api
@@ -18,13 +20,21 @@ class TestRespondTo < Test::Unit::TestCase
     assert_equal env, Rack::RespondTo.env
   end
 
-  test "mime type accessor" do
-    Rack::RespondTo.mime_type = 'application/xml'
-    assert_equal 'application/xml', Rack::RespondTo.mime_type
+  test "media types accessor" do
+    Rack::RespondTo.media_types = %w( application/xml )
+    assert_equal %w( application/xml ), Rack::RespondTo.media_types
 
     # alias
-    Rack::RespondTo.media_type = 'application/xml'
-    assert_equal 'application/xml', Rack::RespondTo.media_type
+    Rack::RespondTo.media_types = %w( application/xml )
+    assert_equal %w( application/xml ), Rack::RespondTo.media_types
+  end
+
+  test "selected media type reader" do
+    Rack::RespondTo.media_types = %w( application/xml )
+    body = App.respond_to do |format|
+      format.xml { 'xml' }
+    end
+    assert_equal 'application/xml', Rack::RespondTo.selected_media_type
   end
 
   test "mixin injects respond_to class method" do
@@ -35,59 +45,54 @@ class TestRespondTo < Test::Unit::TestCase
     assert App.new.respond_to?(:respond_to)
   end
 
-  ## mime type
+  ## requested media types
 
-  test "mime type is extracted from header (first in list)" do
-    Rack::RespondTo.env = {'HTTP_ACCEPT' => 'text/html,application/xml'}
-    assert_equal 'text/html', Rack::RespondTo.mime_type
-
-    Rack::RespondTo.env = {'HTTP_ACCEPT' => 'application/xml,text/html'}
-    assert_equal 'application/xml', Rack::RespondTo.mime_type
-  end
-
-  test "mime type with empty header" do
-    assert_nothing_raised do
-      Rack::RespondTo.env = {'HTTP_ACCEPT' => ''}
-      Rack::RespondTo.mime_type = nil
-      assert_equal nil, Rack::RespondTo.mime_type
-    end
-  end
-
-  test "mime type with nil header" do
-    assert_nothing_raised do
-      Rack::RespondTo.env = {}
-      Rack::RespondTo.mime_type = nil
-      assert_equal nil, Rack::RespondTo.mime_type
-    end
-  end
-
-  test "mime type without source" do
-    assert_nothing_raised do
-      Rack::RespondTo.env = nil
-      Rack::RespondTo.mime_type = nil
-      assert_equal nil, Rack::RespondTo.mime_type
-    end
-  end
-
-  test "explicitly specified mime type takes precedence over env's" do
+  test "explicitly specified media types take precedence over header's" do
     Rack::RespondTo.env = {'HTTP_ACCEPT' => 'text/html'}
-    Rack::RespondTo.mime_type = 'text/plain'
-    assert_equal 'text/plain', Rack::RespondTo.mime_type
+    Rack::RespondTo.media_types = %w( text/plain )
+    assert_equal %w( text/plain ), Rack::RespondTo.media_types
   end
 
   ## respond_to
 
-  test "respond_to returns block for requested format" do
-    Rack::RespondTo.mime_type = 'application/xml'
+  test "respond_to returns block for highest ranking format" do
+    Rack::RespondTo.env = {'HTTP_ACCEPT' => 'application/xml;q=0.8,text/plain;q=0.9'}
     body = App.respond_to do |format|
       format.xml { 'xml' }
       format.txt { 'txt' }
     end
-    assert_equal 'xml', body
+    assert_equal 'txt', body
+  end
+
+  test "cascades down the Accept header's list to find suitable type" do
+    Rack::RespondTo.env = {'HTTP_ACCEPT' => 'text/html,text/plain;q=0.9'}
+    body = App.respond_to do |format|
+      format.xml { 'xml' }
+      format.txt { 'txt' }
+    end
+    assert_equal 'txt', body
   end
 
   test "respond_to with no matching format" do
-    Rack::RespondTo.mime_type = 'text/html'
+    Rack::RespondTo.media_types = %w( text/html )
+    body = App.respond_to do |format|
+      format.xml { 'xml' }
+      format.txt { 'txt' }
+    end
+    assert_equal nil, body
+  end
+
+  test "respond_to with empty type list" do
+    Rack::RespondTo.media_types = []
+    body = App.respond_to do |format|
+      format.xml { 'xml' }
+      format.txt { 'txt' }
+    end
+    assert_equal nil, body
+  end
+
+  test "respond_to with nil type list" do
+    Rack::RespondTo.media_types = nil
     body = App.respond_to do |format|
       format.xml { 'xml' }
       format.txt { 'txt' }
@@ -96,7 +101,7 @@ class TestRespondTo < Test::Unit::TestCase
   end
 
   test "respond_to handles synonymous formats" do
-    Rack::RespondTo.mime_type = 'text/html'
+    Rack::RespondTo.media_types = %w( text/html )
 
     body = App.respond_to do |format|
       format.htm { 'htm' } # htm/html
@@ -109,5 +114,16 @@ class TestRespondTo < Test::Unit::TestCase
       format.json { 'json' }
     end
     assert_equal 'html', body
+  end
+
+  test "repond_to sets selected media type" do
+    Rack::RespondTo.media_types = %w( text/html text/plain )
+    assert_equal nil, Rack::RespondTo.selected_media_type
+    body = App.respond_to do |format|
+      format.xml { 'xml' }
+      format.txt { 'txt' }
+    end
+    assert_equal 'txt', body
+    assert_equal 'text/plain', Rack::RespondTo.selected_media_type
   end
 end

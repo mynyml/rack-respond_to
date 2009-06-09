@@ -8,7 +8,7 @@ module Rack
   #
   module RespondTo
     class << self
-      # Assign the environment directly to fetch the mime type from
+      # Assign the environment directly to fetch the requested media types from
       # env['HTTP_ACCEPT'] ('Accept:' request header).
       #
       # ===== Example
@@ -19,15 +19,27 @@ module Rack
       #
       attr_accessor :env
 
-      # If used completely standalone, you can assign the request mime_type directly.
+      # If used completely standalone, you can assign the requested media types
+      # directly.
       #
       # ===== Example
       #
-      #   RespondTo.mime_type = 'application/xml'
+      #   RespondTo.media_types = ['application/xml']
       #
-      attr_accessor :mime_type
-      alias :media_type= :mime_type=
-      alias :media_type  :mime_type
+      attr_accessor :media_types
+      alias :mime_types= :media_types=
+      alias :mime_types  :media_types
+
+      # Contains the media type that was responded to. Set after the respond_to
+      # block is called.
+      #
+      # Useful for setting the response's Content-Type:
+      #
+      #   [200, {'Content-Type' => RespondTo.selected_media_type}, [body]]
+      #
+      attr_accessor :selected_media_type
+      alias :selected_mime_type= :selected_media_type=
+      alias :selected_mime_type  :selected_media_type
 
       def included(base) #:nodoc:
         base.extend(ClassMethods)
@@ -36,34 +48,35 @@ module Rack
         end
       end
 
-      # Mime type requested.
-      #
-      # Useful for setting content type:
-      #
-      #   [200, {'Content-Type' => Rack::RespondTo.mime_type}, [body]]
-      #
-      def mime_type
-        @mime_type || accept
-      end
-
-      # Cast format to mime type
+      # Cast format to media type
       #
       # ===== Example
       #
-      #   RespondTo::MimeType('html') #=> 'text/html'
+      #   RespondTo::MediaType('html') #=> 'text/html'
+      #   RespondTo::MediaType('htm')  #=> 'text/html'
       #
-      def MimeType(format)
+      def MediaType(format)
         Rack::Mime.mime_type(format.sub(/^\./,'').insert(0,'.'))
+      end
+      alias :MimeType :MediaType
+
+      # Requested media types, in preferencial order
+      #
+      # ===== Examples
+      #
+      #   RespondTo.env['HTTP_ACCEPT'] #=> 'text/html,application/xml'
+      #   RespondTo.media_types        #=> ['text/html', 'application/xml']
+      #
+      #   RespondTo.env['HTTP_ACCEPT'] #=> 'text/html;q=0.7,application/xml;q=0.9,application/json;q=0.8'
+      #   RespondTo.media_types        #=> ['application/xml', 'application/json', 'text/html']
+      #
+      def media_types
+        @media_types || accept_list
       end
 
       private
-        # The mime type retained from the HTTP_ACCEPT header's list
-        #
-        # ===== Returns
-        # String:: first mime type from header's list or nil if none
-        #
-        def accept
-          Rack::AcceptMediaTypes.new(self.env['HTTP_ACCEPT'] || '').prefered unless self.env.nil?
+        def accept_list
+          self.env.nil? ? [] : Rack::AcceptMediaTypes.new(self.env['HTTP_ACCEPT'] || '')
         end
     end
 
@@ -75,30 +88,53 @@ module Rack
     end
 
     module ClassMethods
+
       # Allows defining different actions and returns the one which corresponds
-      # to the current RespondTo.mime_type.
+      # to the highest ranking value in the RespondTo.media_types list.
       #
-      # ===== Example
+      # If no handler is defined for the highest ranking value, respond_to will
+      # cascade down the RespondTo.media_types list until it finds a match.
+      # Returns nil if there is no match.
       #
-      #   RespondTo.mime_type = 'text/html'
+      # ===== Examples
+      #
+      #   RespondTo.media_types = ['text/html', 'application/xml']
       #
       #   respond_to do |format|
-      #     format.html { '<em>html</em>' }
-      #     format.xml  { '<content>xml</content>' }
+      #     format.html { 'html' }
+      #     format.xml  { 'xml'  }
       #   end
-      #   #=> '<em>html</em>'
+      #   #=> 'html'
       #
-      def respond_to(&block)
+      #   RespondTo.media_types = ['text/html', 'application/xml']
+      #
+      #   respond_to do |format|
+      #     format.xml  { 'xml' }
+      #     format.txt  { 'txt'  }
+      #   end
+      #   #=> 'xml'
+      #
+      #   RespondTo.media_types = ['text/html', 'application/json']
+      #
+      #   respond_to do |format|
+      #     format.xml  { 'xml' }
+      #     format.txt  { 'txt'  }
+      #   end
+      #   #=> nil
+      #
+      def respond_to
         format = Format.new
-        block.call(format)
-        handler = format[RespondTo.mime_type]
+        yield format
+        type = RespondTo.media_types.detect {|type| format[type] }
+        RespondTo.selected_media_type = type
+        handler = format[type]
         handler.nil? ? nil : handler.call
       end
     end
 
     class Format < Hash #:nodoc:
       def method_missing(format, *args, &handler)
-        self[RespondTo::MimeType(format.to_s)] = handler
+        self[RespondTo::MediaType(format.to_s)] = handler
       end
     end
   end

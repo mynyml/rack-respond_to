@@ -1,4 +1,4 @@
-o handle wildcard content-types?
+o handle wildcard content-types
   e.g. */* matches first format block
 
     Rack::RespondTo.mime_type = '*/*'
@@ -15,8 +15,8 @@ o handle wildcard content-types?
     end
     body #=> 'xml'
 
-o cascade down accept types priority instead of only responding to prefered
-type. e.g:
+x cascade down accept types priority instead of only responding to prefered
+  type. e.g:
 
     env['HTTP_ACCEPT'] #=> 'text/plain,text/html;q=0.9,application/xml;q=0.8'
 
