@@ -60,7 +60,7 @@ end
 desc "Generate rdoc documentation."
 Rake::RDocTask.new("rdoc") { |rdoc|
   rdoc.rdoc_dir = 'doc/rdoc'
-  rdoc.title    = "Simple Router - Document"
+  rdoc.title    = "Rack::RespondTo"
   rdoc.options << '--line-numbers' << '--inline-source'
   rdoc.options << '--charset' << 'utf-8'
   rdoc.rdoc_files.include('README')
