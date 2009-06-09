@@ -1,7 +1,7 @@
 --- !ruby/object:Gem::Specification 
 name: rack-respond_to
 version: !ruby/object:Gem::Version 
-  version: 0.9.5
+  version: 0.9.6
 platform: ruby
 authors: 
 - Martin Aumont
@@ -9,7 +9,7 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2009-06-08 00:00:00 -04:00
+date: 2009-06-09 00:00:00 -04:00
 default_executable: 
 dependencies: 
 - !ruby/object:Gem::Dependency 
