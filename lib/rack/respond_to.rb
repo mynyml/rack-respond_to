@@ -15,6 +15,7 @@ module Rack
       #
       #   def call(env)
       #     Rack::RespondTo.env = env
+      #     #...
       #   end
       #
       attr_accessor :env
