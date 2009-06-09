@@ -25,6 +25,8 @@ class App
     request = Rack::Request.new(env)
 
     body = case request.path_info
+    when '/'
+      "try foo<em>.html</em> and foo<em>.xml</em>"
     when '/foo'
       respond_to do |format|
         format.html { '<em>html</em>' }
@@ -32,10 +34,9 @@ class App
       end
     end
 
-    [200, {'Content-Type' => Rack::RespondTo.mime_type}, [body]]
+    [200, {'Content-Type' => Rack::RespondTo.selected_media_type || 'text/html'}, [body]]
   end
 end
 
 use Rack::AbstractFormat
 run App.new
-

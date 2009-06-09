@@ -13,7 +13,7 @@ class App
   include Rack::RespondTo
 
   def call(env)
-    Rack::RespondTo.mime_type = 'application/xml'
+    Rack::RespondTo.media_types = %w( application/xml )
 
     body = case env['PATH_INFO']
     when '/'
@@ -23,7 +23,7 @@ class App
       end
     end
 
-    [200, {'Content-Type' => Rack::RespondTo.mime_type}, [body]]
+    [200, {'Content-Type' => Rack::RespondTo.selected_media_type}, [body]]
   end
 end
 
