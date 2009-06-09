@@ -126,4 +126,45 @@ class TestRespondTo < Test::Unit::TestCase
     assert_equal 'txt', body
     assert_equal 'text/plain', Rack::RespondTo.selected_media_type
   end
+
+  ## wildcard media types
+
+  test "wildcard type matches first handler" do
+    Rack::RespondTo.media_types = %w( */* )
+
+    body = App.respond_to do |format|
+      format.xml { 'xml' }
+      format.txt { 'txt' }
+    end
+    assert_equal 'xml', body
+
+    body = App.respond_to do |format|
+      format.txt { 'txt' }
+      format.xml { 'xml' }
+    end
+    assert_equal 'txt', body
+  end
+
+  test "wildcard subtype matches first handler for type" do
+    Rack::RespondTo.media_types = %w( text/* )
+
+    body = App.respond_to do |format|
+      format.xml { 'xml' }
+      format.txt { 'txt' }
+      format.htm { 'htm' }
+    end
+    assert_equal 'txt', body
+
+    body = App.respond_to do |format|
+      format.xml { 'xml' }
+      format.htm { 'htm' }
+      format.txt { 'txt' }
+    end
+    assert_equal 'htm', body
+
+    body = App.respond_to do |format|
+      format.xml { 'xml' }
+    end
+    assert_equal nil, body
+  end
 end

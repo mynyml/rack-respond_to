@@ -1,4 +1,4 @@
-o handle wildcard content-types
+x handle wildcard content-types
   e.g. */* matches first format block
 
     Rack::RespondTo.mime_type = '*/*'

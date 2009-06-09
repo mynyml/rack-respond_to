@@ -126,16 +126,36 @@ module Rack
       def respond_to
         format = Format.new
         yield format
-        type = RespondTo.media_types.detect {|type| format[type] }
+        type, handler = Helpers.match(RespondTo.media_types, format)
         RespondTo.selected_media_type = type
-        handler = format[type]
         handler.nil? ? nil : handler.call
       end
     end
 
-    class Format < Hash #:nodoc:
+    # Helper methods, kept in a seperate namespace to avoid pollution.
+    module Helpers #:nodoc:
+      extend self
+
+      # TODO refactor
+      def match(media_types, format)
+        selected = []
+        accepted_types = media_types.map {|type| type.gsub(/\*/,'.*') }
+        accepted_types.each do |at|
+          format.each do |ht, handler|
+            (selected = [ht, handler]) and break if ht.match(at)
+          end
+          break unless selected.empty?
+        end
+        selected
+      end
+    end
+
+    # NOTE
+    # Array instead of hash because order matters (wildcard type matches first
+    # handler)
+    class Format < Array #:nodoc:
       def method_missing(format, *args, &handler)
-        self[RespondTo::MediaType(format.to_s)] = handler
+        self << [RespondTo::MediaType(format.to_s), handler]
       end
     end
   end
