@@ -97,6 +97,12 @@ module Rack
       # cascade down the RespondTo.media_types list until it finds a match.
       # Returns nil if there is no match.
       #
+      # Wildcard media types (*/*, text/*, etc.) will trigger the first
+      # matching format definition, so order matters if you expect the Accept
+      # header to contain any (a nil Accept header, for instance, will be
+      # turned into '*/*' as per rfc2616-sec14.1). Simply define the 'default'
+      # handler first (usually html), and it will work like a charm.
+      #
       # ===== Examples
       #
       #   RespondTo.media_types = ['text/html', 'application/xml']
@@ -122,6 +128,31 @@ module Rack
       #     format.txt  { 'txt'  }
       #   end
       #   #=> nil
+      #
+      #   RespondTo.media_types = ['*/*']
+      #
+      #   respond_to do |format|
+      #     format.html { 'html' }
+      #     format.xml  { 'xml'  }
+      #   end
+      #   #=> 'html'
+      #
+      #   RespondTo.media_types = ['*/*']
+      #
+      #   respond_to do |format|
+      #     format.xml  { 'xml'  }
+      #     format.html { 'html' }
+      #   end
+      #   #=> 'xml'
+      #
+      #   RespondTo.media_types = ['text/*']
+      #
+      #   respond_to do |format|
+      #     format.xml  { 'xml'  } # application/xml  (skip)
+      #     format.html { 'html' } # text/html        (match)
+      #     format.txt  { 'txt'  }
+      #   end
+      #   #=> 'html'
       #
       def respond_to
         format = Format.new

@@ -11,6 +11,7 @@ preference (see http://github.com/mynyml/rack-accept-media-types).
 
 * Based on familiar API (Rails)
 * Cascades down priority list of accepted media types
+* Handles wildcard media types
 * Simple to use
 * Simple code (~50 LOCs)
 * Flexible (standalone use)
