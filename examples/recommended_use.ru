@@ -1,5 +1,5 @@
-# install required dependencies:
-#   $sudo gem install mynyml-rack-abstract-format --source=http://gems.github.com/
+# install required dependency:
+#   $sudo gem install rack-abstract-format
 #
 # run with:
 #   $rackup examples/recommended_use.ru -p 8080
@@ -9,10 +9,8 @@
 #   localhost:8080/foo.xml
 #
 require 'pathname'
-root  =  Pathname(__FILE__).dirname.parent.expand_path
-$:.unshift(root + 'lib')
+$:.unshift Pathname(__FILE__).dirname.parent + 'lib'
 
-require 'rubygems'
 require 'rack'
 require 'rack/abstract_format'
 require 'rack/respond_to'
@@ -26,7 +24,7 @@ class App
 
     body = case request.path_info
     when '/'
-      "try foo<em>.html</em> and foo<em>.xml</em>"
+      "try /foo<em>.html</em> and /foo<em>.xml</em>"
     when '/foo'
       respond_to do |format|
         format.html { '<em>html</em>' }
@@ -34,7 +32,7 @@ class App
       end
     end
 
-    [200, {'Content-Type' => Rack::RespondTo.selected_media_type || 'text/html'}, [body]]
+    [200, {'Content-Type' => Rack::RespondTo.selected_media_type || 'text/html'}, [body || '']]
   end
 end
 
