@@ -1,6 +1,6 @@
 spec = Gem::Specification.new do |s|
   s.name                = "rack-respond_to"
-  s.version             = "0.9.7"
+  s.version             = "0.9.8"
   s.summary             = "Rack middleware port of Rails's respond_to feature"
   s.description         = "Rack middleware port of Rails's respond_to feature."
   s.author              = "Martin Aumont"
