@@ -1,77 +1,16 @@
---- !ruby/object:Gem::Specification 
-name: rack-respond_to
-version: !ruby/object:Gem::Version 
-  version: 0.9.7
-platform: ruby
-authors: 
-- Martin Aumont
-autorequire: 
-bindir: bin
-cert_chain: []
+spec = Gem::Specification.new do |s|
+  s.name                = "rack-respond_to"
+  s.version             = "0.9.7"
+  s.summary             = "Rack middleware port of Rails's respond_to feature"
+  s.description         = "Rack middleware port of Rails's respond_to feature."
+  s.author              = "Martin Aumont"
+  s.email               = "mynyml@gmail.com"
+  s.homepage            = "http://github.com/mynyml/rack-respond_to"
+  s.rubyforge_project   = "rack-respond_to"
+  s.has_rdoc            =  true
+  s.require_path        = "lib"
+  s.files               =  File.read("Manifest").strip.split("\n")
 
-date: 2009-06-09 00:00:00 -04:00
-default_executable: 
-dependencies: 
-- !ruby/object:Gem::Dependency 
-  name: mynyml-rack-accept-media-types
-  type: :runtime
-  version_requirement: 
-  version_requirements: !ruby/object:Gem::Requirement 
-    requirements: 
-    - - ">="
-      - !ruby/object:Gem::Version 
-        version: "0.6"
-    version: 
-description: Rack middleware port of Rails's respond_to feature
-email: mynyml@gmail.com
-executables: []
-
-extensions: []
-
-extra_rdoc_files: []
-
-files: 
-- Rakefile
-- test
-- test/test_respond_to.rb
-- test/test_helper.rb
-- examples
-- examples/simple_app.ru
-- examples/recommended_use.ru
-- TODO
-- lib
-- lib/rack
-- lib/rack/respond_to.rb
-- rack-respond_to.gemspec
-- LICENSE
-- README
-has_rdoc: true
-homepage: ""
-licenses: []
-
-post_install_message: 
-rdoc_options: []
-
-require_paths: 
-- lib
-required_ruby_version: !ruby/object:Gem::Requirement 
-  requirements: 
-  - - ">="
-    - !ruby/object:Gem::Version 
-      version: "0"
-  version: 
-required_rubygems_version: !ruby/object:Gem::Requirement 
-  requirements: 
-  - - ">="
-    - !ruby/object:Gem::Version 
-      version: "0"
-  version: 
-requirements: []
-
-rubyforge_project: 
-rubygems_version: 1.3.3
-signing_key: 
-specification_version: 3
-summary: Rack middleware port of Rails's respond_to feature
-test_files: []
-
+  s.add_dependency 'mynyml-rack-accept-media-types', '>= 0.6'
+  #s.add_development_dependency 'minitest'
+end

@@ -1,0 +1,12 @@
+.gitignore
+LICENSE
+Manifest
+README
+Rakefile
+TODO
+examples/recommended_use.ru
+examples/simple_app.ru
+lib/rack/respond_to.rb
+rack-respond_to.gemspec
+test/test_helper.rb
+test/test_respond_to.rb
