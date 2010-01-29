@@ -1,6 +1,5 @@
 require 'pathname'
 require 'test/unit'
-require 'rubygems'
 require 'rack'
 begin
   require 'ruby-debug'
