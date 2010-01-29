@@ -1,11 +1,9 @@
 # run me with:
-#   $rackup examples/simple_app.ru -p 8080
+#   $rackup examples/simple_app.ru
 #
 require 'pathname'
-root  =  Pathname(__FILE__).dirname.parent.expand_path
-$:.unshift(root + 'lib')
+$:.unshift Pathname(__FILE__).dirname.parent + 'lib'
 
-require 'rubygems'
 require 'rack'
 require 'rack/respond_to'
 
@@ -23,7 +21,7 @@ class App
       end
     end
 
-    [200, {'Content-Type' => Rack::RespondTo.selected_media_type}, [body]]
+    [200, {'Content-Type' => Rack::RespondTo.selected_media_type || ''}, [body || '']]
   end
 end
 
