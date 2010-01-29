@@ -23,10 +23,7 @@ class TestRespondTo < MiniTest::Unit::TestCase
   test "media types accessor" do
     Rack::RespondTo.media_types = %w( application/xml )
     assert_equal %w( application/xml ), Rack::RespondTo.media_types
-
-    # alias
-    Rack::RespondTo.media_types = %w( application/xml )
-    assert_equal %w( application/xml ), Rack::RespondTo.media_types
+    assert_equal %w( application/xml ), Rack::RespondTo.mime_types  #alias
   end
 
   test "selected media type reader" do
@@ -35,6 +32,7 @@ class TestRespondTo < MiniTest::Unit::TestCase
       format.xml { 'xml' }
     end
     assert_equal 'application/xml', Rack::RespondTo.selected_media_type
+    assert_equal 'application/xml', Rack::RespondTo.selected_mime_type  #alias
   end
 
   test "mixin injects respond_to class method" do
