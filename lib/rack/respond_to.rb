@@ -170,7 +170,7 @@ module Rack
       # TODO refactor
       def match(media_types, format)
         selected = []
-        accepted_types = media_types.map {|type| type.gsub(/\*/,'.*') }
+        accepted_types = media_types.map {|type| Regexp.escape(type).gsub(/\\\*/,'.*') }
         accepted_types.each do |at|
           format.each do |ht, handler|
             (selected = [ht, handler]) and break if ht.match(at)

@@ -114,6 +114,26 @@ class TestRespondTo < MiniTest::Unit::TestCase
     assert_equal 'html', body
   end
 
+  test "respond_to handles types with special chars" do
+    Rack::RespondTo.media_types = %w( application/rss+xml )
+    body = App.respond_to do |format|
+      format.rss { 'rss' }
+    end
+    assert_equal 'rss', body
+
+    Rack::RespondTo.media_types = %w( video/x-msvideo )
+    body = App.respond_to do |format|
+      format.avi { 'avi' }
+    end
+    assert_equal 'avi', body
+
+    Rack::RespondTo.media_types = %w( application/x-bzip2 )
+    body = App.respond_to do |format|
+      format.bz2 { 'bz2' }
+    end
+    assert_equal 'bz2', body
+  end
+
   test "repond_to sets selected media type" do
     Rack::RespondTo.media_types = %w( text/html text/plain )
     assert_equal nil, Rack::RespondTo.selected_media_type
