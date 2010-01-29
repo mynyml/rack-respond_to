@@ -3,8 +3,8 @@ require 'test/unit'
 require 'rack'
 begin
   require 'ruby-debug'
-  require 'phocus/test_unit'
-  require 'pending'
+  require 'phocus'
+  require 'redgreen'
 rescue LoadError, RuntimeError
 end
 
@@ -15,7 +15,6 @@ require 'rack/respond_to'
 
 class Test::Unit::TestCase
   def self.test(name, &block)
-    name = :"test_#{name.gsub(/\s/,'_')}"
-    define_method(name, &block)
+    define_method(:"test_#{name.gsub(/\s/,'_')}", &block)
   end
 end
