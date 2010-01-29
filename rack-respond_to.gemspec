@@ -12,5 +12,5 @@ spec = Gem::Specification.new do |s|
   s.files               =  File.read("Manifest").strip.split("\n")
 
   s.add_dependency 'mynyml-rack-accept-media-types', '>= 0.6'
-  #s.add_development_dependency 'minitest'
+  s.add_development_dependency 'minitest'
 end

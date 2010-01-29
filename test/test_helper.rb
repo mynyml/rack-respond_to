@@ -1,5 +1,5 @@
 require 'pathname'
-require 'test/unit'
+require 'minitest/autorun'
 require 'rack'
 begin
   require 'ruby-debug'
@@ -13,7 +13,7 @@ $:.unshift(root.join('lib'))
 
 require 'rack/respond_to'
 
-class Test::Unit::TestCase
+class MiniTest::Unit::TestCase
   def self.test(name, &block)
     define_method(:"test_#{name.gsub(/\s/,'_')}", &block)
   end

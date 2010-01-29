@@ -4,7 +4,7 @@ class App
   include Rack::RespondTo
 end
 
-class TestRespondTo < Test::Unit::TestCase
+class TestRespondTo < MiniTest::Unit::TestCase
 
   def setup
     Rack::RespondTo.selected_media_type = nil
