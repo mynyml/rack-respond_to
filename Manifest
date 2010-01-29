@@ -4,6 +4,7 @@ Manifest
 README
 Rakefile
 TODO
+docs.watchr
 examples/recommended_use.ru
 examples/simple_app.ru
 lib/rack/respond_to.rb
