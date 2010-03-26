@@ -62,7 +62,7 @@ See `examples/recommended_use.ru` for a complete example.
 
 Acknowledgement
 ---------------
-* thanks to github.com/daicoden for `format.any` idea and initial patch
+* thanks to [daicoden][1] for `format.any` idea and initial patch
 
 Links
 -----
@@ -70,3 +70,6 @@ Links
 * code: http://github.com/mynyml/rack-respond_to
 * docs: http://docs.github.com/mynyml/rack-respond_to
 * bugs: http://github.com/mynyml/rack-respond_to/issues
+
+
+[1]: http://github.com/daicoden
