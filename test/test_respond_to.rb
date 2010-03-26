@@ -185,4 +185,26 @@ class TestRespondTo < MiniTest::Unit::TestCase
     end
     assert_equal nil, body
   end
+
+  ## catch-all format
+
+  test "catch-all format" do
+    Rack::RespondTo.media_types = %w( text/html application/xml )
+
+    body = App.respond_to do |format|
+      format.txt { 'txt' }
+      format.avi { 'avi' }
+      format.any { 'any' }
+    end
+    assert_equal 'any', body
+    assert_equal 'text/html', Rack::RespondTo.selected_media_type
+
+    body = App.respond_to do |format|
+      format.htm { 'htm' }
+      format.xml { 'xml' }
+      format.any { 'any' }
+    end
+    assert_equal 'htm', body
+    assert_equal 'text/html', Rack::RespondTo.selected_media_type
+  end
 end

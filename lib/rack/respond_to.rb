@@ -56,7 +56,7 @@ module Rack
       #   RespondTo::MediaType('htm')  #=> 'text/html'
       #
       def MediaType(format)
-        Rack::Mime.mime_type(format.sub(/^\./,'').insert(0,'.'))
+        Rack::Mime.mime_type(format.sub(/^\./,'').insert(0,'.'), media_types.first)
       end
       alias :MimeType :MediaType
 
@@ -91,17 +91,20 @@ module Rack
     module ClassMethods
 
       # Allows defining different actions and returns the one which corresponds
-      # to the highest ranking value in the RespondTo.media_types list.
+      # to the highest ranking value in the `RespondTo.media_types` list.
       #
       # If no handler is defined for the highest ranking value, respond_to will
-      # cascade down the RespondTo.media_types list until it finds a match.
+      # cascade down the `RespondTo.media_types` list until it finds a match.
       # Returns nil if there is no match.
       #
       # Wildcard media types (*/*, text/*, etc.) will trigger the first
       # matching format definition, so order matters if you expect the Accept
       # header to contain any (a nil Accept header, for instance, will be
-      # turned into '*/*' as per rfc2616-sec14.1). Simply define the 'default'
-      # handler first (usually html), and it will work like a charm.
+      # turned into '*/*' as per rfc2616-sec14.1).
+      #
+      # If `any` is specified as the format, it will behave as a catch-all and
+      # will match the highest ranking value in the `RespondTo.media_types` list
+      # if no previous format has.
       #
       # ===== Examples
       #
@@ -153,6 +156,15 @@ module Rack
       #     format.txt  { 'txt'  }
       #   end
       #   #=> 'html'
+      #
+      #   RespondTo.media_types = ['text/html', 'text/plain']
+      #
+      #   respond_to do |format|
+      #     format.xml  { 'xml' }
+      #     format.rss  { 'rss' }
+      #     format.any  { 'unsusported format' }
+      #   end
+      #   #=> 'unsusported format'
       #
       def respond_to
         format = Format.new
