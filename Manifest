@@ -5,6 +5,7 @@ README.md
 Rakefile
 TODO
 docs.watchr
+examples/catch-all_format.ru
 examples/recommended_use.ru
 examples/simple_app.ru
 lib/rack/respond_to.rb
