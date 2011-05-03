@@ -51,6 +51,13 @@ class TestRespondTo < MiniTest::Unit::TestCase
     assert_equal %w( text/plain ), Rack::RespondTo.media_types
   end
 
+  test "explicitly specified headers in the media types take precedence over other media types" do
+    Rack::RespondTo.env = {'HTTP_ACCEPT' => 'text/html'}
+    Rack::RespondTo.media_types = %w( text/plain text/html)
+    assert_equal %w( text/html ), Rack::RespondTo.media_types
+  end
+
+
   ## respond_to
 
   test "respond_to returns block for highest ranking format" do

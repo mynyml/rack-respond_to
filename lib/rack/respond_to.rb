@@ -62,6 +62,8 @@ module Rack
 
       # Requested media types, in preferencial order
       #
+      # Favor items requested in HTTP_ACCEPT over the assigned media_types
+      #
       # ===== Examples
       #
       #   RespondTo.env['HTTP_ACCEPT'] #=> 'text/html,application/xml'
@@ -71,7 +73,15 @@ module Rack
       #   RespondTo.media_types        #=> ['application/xml', 'application/json', 'text/html']
       #
       def media_types
-        @media_types || accept_list
+        return @media_types unless accept_list
+        return accept_list unless @media_types
+
+        if accept_list.empty?
+          @media_types
+        else
+          types = accept_list & @media_types
+          types.empty? ? @media_types : types
+        end
       end
       alias :mime_types :media_types
 
